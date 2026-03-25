@@ -8,26 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <i class="fas fa-tree"></i>
-                <span>绿色家园</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#home">首页</a></li>
-                <li><a href="#about">关于植树节</a></li>
-                <li><a href="#knowledge">环保行动</a></li>
-                <li><a href="#reflections">我们的感悟</a></li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+    <!-- 导航栏 - 动态加载 -->
+    <div id="navbar-container"></div>
 
+    <!-- 首屏横幅 -->
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>2026年植树节</h1>
@@ -38,6 +22,7 @@
         </div>
     </section>
 
+    <!-- 植树节介绍 -->
     <section id="about" class="section">
         <div class="container">
             <div class="section-header">
@@ -70,6 +55,7 @@
         </div>
     </section>
 
+    <!-- 森林作用 -->
     <section class="section section-alt">
         <div class="container">
             <div class="section-header">
@@ -109,6 +95,7 @@
         </div>
     </section>
 
+    <!-- 环保知识 -->
     <section id="knowledge" class="section">
         <div class="container">
             <div class="section-header">
@@ -150,6 +137,7 @@
         </div>
     </section>
 
+    <!-- 个人感悟 -->
     <section id="reflections" class="section section-green">
         <div class="container">
             <div class="section-header">
@@ -163,166 +151,81 @@
                 <p>作为农业类职业本科的学生，我们深知"绿水青山就是金山银山"的含义。植树造林不仅是为了美化环境，更是为了可持续发展。下面是我们小组同学对于植树节以及乡村振兴的思考...</p>
             </div>
 
-            <div class="reflections-grid">
-                <article class="reflection-card">
-                    <div class="reflection-header">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>陈思雨</h4>
-                            <span class="major">园艺技术专业</span>
-                        </div>
-                    </div>
-                    <div class="reflection-content">
-                        <h3>让绿色成为乡村的底色</h3>
-                        <p>在园艺专业的学习中，我深刻体会到植物对于环境的重要性。一棵树就是一个小型的生态系统...</p>
-                        <a href="reflections/reflection-chen.html" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="reflection-footer">
-                        <span><i class="fas fa-calendar"></i> 2026年3月</span>
-                        <span><i class="fas fa-heart"></i> 热爱园艺</span>
-                    </div>
-                </article>
-
-                <article class="reflection-card">
-                    <div class="reflection-header">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>林浩宇</h4>
-                            <span class="major">农业种植专业</span>
-                        </div>
-                    </div>
-                    <div class="reflection-content">
-                        <h3>根植大地，绿满乡野</h3>
-                        <p>每当我走在乡间的小路上，看到那一片片生机盎然的田野，我便深深感受到农业的魅力与责任...</p>
-                        <a href="reflections/reflection-lin.html" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="reflection-footer">
-                        <span><i class="fas fa-calendar"></i> 2026年3月</span>
-                        <span><i class="fas fa-heart"></i> 热爱家乡</span>
-                    </div>
-                </article>
-
-                <article class="reflection-card">
-                    <div class="reflection-header">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>王梦琪</h4>
-                            <span class="major">畜牧兽医专业</span>
-                        </div>
-                    </div>
-                    <div class="reflection-content">
-                        <h3>生态养殖，绿色发展</h3>
-                        <p>在畜牧兽医专业的学习过程中，我逐渐认识到生态环境与畜牧业的密切关系...</p>
-                        <a href="reflections/reflection-wang.html" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="reflection-footer">
-                        <span><i class="fas fa-calendar"></i> 2026年3月</span>
-                        <span><i class="fas fa-heart"></i> 生态优先</span>
-                    </div>
-                </article>
-
-                <article class="reflection-card">
-                    <div class="reflection-header">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>张俊杰</h4>
-                            <span class="major">农业机械化专业</span>
-                        </div>
-                    </div>
-                    <div class="reflection-content">
-                        <h3>科技兴农，绿色先行</h3>
-                        <p>农业机械化是现代农业发展的重要方向，而绿色发展是时代的主题...</p>
-                        <a href="reflections/reflection-zhang.html" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="reflection-footer">
-                        <span><i class="fas fa-calendar"></i> 2026年3月</span>
-                        <span><i class="fas fa-heart"></i> 科技创新</span>
-                    </div>
-                </article>
-
-                <article class="reflection-card">
-                    <div class="reflection-header">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>刘欣悦</h4>
-                            <span class="major">园林工程专业</span>
-                        </div>
-                    </div>
-                    <div class="reflection-content">
-                        <h3>描绘乡村的绿色画卷</h3>
-                        <p>园林专业让我懂得，绿色不仅仅是颜色，更是一种生活态度...</p>
-                        <a href="reflections/reflection-liu.html" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="reflection-footer">
-                        <span><i class="fas fa-calendar"></i> 2026年3月</span>
-                        <span><i class="fas fa-heart"></i> 园林艺术</span>
-                    </div>
-                </article>
-
-                <article class="reflection-card">
-                    <div class="reflection-header">
-                        <div class="author-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>赵文博</h4>
-                            <span class="major">农学专业</span>
-                        </div>
-                    </div>
-                    <div class="reflection-content">
-                        <h3>希望的种子</h3>
-                        <p>农学专业的学习让我明白，每一粒种子都蕴含着希望...</p>
-                        <a href="reflections/reflection-zhao.html" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="reflection-footer">
-                        <span><i class="fas fa-calendar"></i> 2026年3月</span>
-                        <span><i class="fas fa-heart"></i> 播种希望</span>
-                    </div>
-                </article>
+            <div id="reflectionsContainer" class="reflections-grid">
+                <div class="loading-message"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>2026年植树节</h4>
-                    <p>植树造林，保护环境<br>共建绿色家园，助力乡村振兴</p>
-                </div>
-                <div class="footer-section">
-                    <h4>快速链接</h4>
-                    <ul>
-                        <li><a href="#about">关于植树节</a></li>
-                        <li><a href="#knowledge">环保行动</a></li>
-                        <li><a href="#reflections">我们的感悟</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>关注我们</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-weixin"></i></a>
-                        <a href="#"><i class="fab fa-qq"></i></a>
-                        <a href="#"><i class="fab fa-weibo"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 植树节宣传网站 | 农业类职业本科小组</p>
-            </div>
-        </div>
-    </footer>
+    <!-- 页脚 - 动态加载 -->
+    <div id="footer-container"></div>
 
+    <!-- 引入脚本 -->
+    <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // 感悟列表API地址
+        const API_URL = '/api/reflections/published';
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 加载公共组件
+            await loadComponents();
+            
+            // 加载感悟数据
+            loadReflections();
+        });
+        
+        // 加载公共组件（导航栏和页脚）
+        async function loadComponents() {
+            await Promise.all([
+                loadComponent('navbar', '#navbar-container'),
+                loadComponent('footer', '#footer-container')
+            ]);
+        }
+        
+        /**
+         * 加载感悟列表
+         * 从API获取已发布的感悟数据并渲染到页面
+         */
+        async function loadReflections() {
+            const container = document.getElementById('reflectionsContainer');
+            
+            try {
+                const response = await fetch(API_URL);
+                const reflections = await response.json();
+                
+                if (reflections.length === 0) {
+                    container.innerHTML = '<div class="empty-message">暂无感悟内容</div>';
+                    return;
+                }
+                
+                container.innerHTML = reflections.map(ref => {
+                    const preview = ref.content ? ref.content.substring(0, 80) + '...' : '';
+                    return `
+                        <article class="reflection-card">
+                            <div class="reflection-header">
+                                <div class="author-info">
+                                    <h4>${escapeHtml(ref.authorName)}</h4>
+                                </div>
+                            </div>
+                            <div class="reflection-content">
+                                <h3>${escapeHtml(ref.title)}</h3>
+                                <p>${escapeHtml(preview)}</p>
+                                <a href="reflection.html?id=${ref.id}" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            <div class="reflection-footer">
+                                <span><i class="fas fa-calendar"></i> ${formatDate(ref.publishDate)}</span>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('加载感悟失败:', error);
+                container.innerHTML = '<div class="error-message">加载失败，请稍后重试</div>';
+            }
+        }
+    </script>
 </body>
 </html>

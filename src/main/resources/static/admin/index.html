@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 植树节感悟管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2d5a27;
+            --secondary-color: #3d6633;
+            --accent-color: #6b8e23;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --success-color: #28a745;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(45, 90, 39, 0.4);
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: var(--white);
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: var(--white);
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-add {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            background: var(--light-gray);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-add:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: #f0f8f0;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px;
+            color: var(--white);
+        }
+        
+        .card-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .card-header .meta {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-body p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-footer {
+            padding: 15px 20px;
+            background: var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-published {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 25px 30px;
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .modal-footer {
+            padding: 20px 30px;
+            background: var(--light-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            position: sticky;
+            bottom: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--white);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: var(--white);
+            font-weight: 600;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .toast-success {
+            background: var(--success-color);
+        }
+        
+        .toast-error {
+            background: var(--danger-color);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .images-section {
+            grid-column: 1 / -1;
+        }
+        
+        .images-section h4 {
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .images-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .image-upload-item {
+            width: 150px;
+            position: relative;
+        }
+        
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-preview .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .image-caption-input {
+            margin-top: 8px;
+        }
+        
+        .image-caption-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .upload-btn {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            background: var(--light-gray);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #999;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .upload-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: #f0f8f0;
+        }
+        
+        .upload-btn i {
+            font-size: 2rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 登录遮罩层样式 */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+        
+        .login-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .login-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .login-box > p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .login-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .login-input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .login-input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .login-input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .login-error {
+            color: var(--danger-color);
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            min-height: 100vh;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录遮罩层 -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <div class="login-icon">
+                <i class="fas fa-tree"></i>
+            </div>
+            <h2>管理后台登录</h2>
+            <p>请输入访问密码</p>
+            <form id="loginForm">
+                <div class="login-input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="adminPassword" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary login-btn">
+                    <i class="fas fa-sign-in-alt"></i> 登录
+                </button>
+            </form>
+            <p id="loginError" class="login-error" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i> 密码错误，请重试
+            </p>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div id="mainContent" class="main-content" style="display: none;">
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-tree"></i> 植树节感悟管理后台</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openModal()">
+                    <i class="fas fa-plus"></i> 添加新感悟
+                </button>
+                <button class="btn btn-success" onclick="loadReflections()">
+                    <i class="fas fa-sync"></i> 刷新
+                </button>
+            </div>
+        </div>
+        
+        <div id="reflectionsGrid" class="cards-grid"></div>
+        
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-seedling"></i>
+            <h3>暂无感悟内容</h3>
+            <p>点击上方"添加新感悟"按钮创建第一篇感悟</p>
+            <button class="btn btn-primary" onclick="openModal()">
+                <i class="fas fa-plus"></i> 添加新感悟
+            </button>
+        </div>
+    </div>
+    
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-edit"></i> 添加新感悟</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reflectionForm">
+                    <input type="hidden" id="reflectionId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="authorName"><i class="fas fa-user"></i> 作者姓名</label>
+                            <input type="text" id="authorName" placeholder="例如：赵文博同学" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="title"><i class="fas fa-heading"></i> 标题</label>
+                            <input type="text" id="title" placeholder="例如：《希望的种子》" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="content"><i class="fas fa-align-left"></i> 正文内容</label>
+                            <textarea id="content" placeholder="请输入感悟正文内容..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width images-section">
+                            <h4><i class="fas fa-images"></i> 文章配图（最多6张）</h4>
+                            <div class="images-grid" id="imagesGrid">
+                                <button type="button" class="upload-btn" onclick="triggerImageUpload()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>添加图片</span>
+                                </button>
+                            </div>
+                            <input type="file" id="imageInput" class="hidden" accept="image/*" multiple onchange="handleImageUpload(event)">
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="highlightQuote"><i class="fas fa-quote-left"></i> 高亮引用</label>
+                            <textarea id="highlightQuote" placeholder="例如：绿水青山就是金山银山" style="min-height: 80px;"></textarea>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="published">
+                            <label for="published">发布到前台网站</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal()">取消</button>
+                <button class="btn btn-success" onclick="saveReflection()">
+                    <i class="fas fa-save"></i> 保存
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = '/api/reflections';
+        const UPLOAD_URL = '/api/upload';
+        let uploadedImages = [];
+        
+        
+        async function loadReflections() {
+            try {
+                const response = await fetch(API_URL);
+                const reflections = await response.json();
+                renderReflections(reflections);
+            } catch (error) {
+                showToast('加载数据失败: ' + error.message, 'error');
+            }
+        }
+        
+        function renderReflections(reflections) {
+            const grid = document.getElementById('reflectionsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (reflections.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            grid.innerHTML = reflections.map(reflection => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3>${escapeHtml(reflection.title)}</h3>
+                        <div class="meta">
+                            <i class="fas fa-user"></i> ${escapeHtml(reflection.authorName)} &nbsp;|&nbsp;
+                            <i class="fas fa-calendar"></i> ${escapeHtml(reflection.publishDate || '未设置')}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>${escapeHtml(reflection.content || '')}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="status-badge ${reflection.published ? 'status-published' : 'status-draft'}">
+                            <i class="fas fa-${reflection.published ? 'check' : 'edit'}"></i>
+                            ${reflection.published ? '已发布' : '草稿'}
+                        </span>
+                        <div class="card-actions">
+                            <button class="btn btn-primary btn-sm" onclick="editReflection(${reflection.id})">
+                                <i class="fas fa-edit"></i> 编辑
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteReflection(${reflection.id})">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function openModal(reflection = null) {
+            const modal = document.getElementById('modal');
+            const form = document.getElementById('reflectionForm');
+            const title = document.getElementById('modalTitle');
+            
+            form.reset();
+            uploadedImages = [];
+            renderImageGrid();
+            
+            if (reflection) {
+                title.innerHTML = '<i class="fas fa-edit"></i> 编辑感悟';
+                document.getElementById('reflectionId').value = reflection.id;
+                document.getElementById('authorName').value = reflection.authorName || '';
+                document.getElementById('title').value = reflection.title || '';
+                document.getElementById('content').value = reflection.content || '';
+                document.getElementById('highlightQuote').value = reflection.highlightQuote || '';
+                document.getElementById('published').checked = reflection.published || false;
+                
+                if (reflection.imageUrl) {
+                    uploadedImages.push({ url: reflection.imageUrl, caption: reflection.imageCaption || '' });
+                }
+                if (reflection.secondImageUrl) {
+                    uploadedImages.push({ url: reflection.secondImageUrl, caption: reflection.secondImageCaption || '' });
+                }
+                if (reflection.thirdImageUrl) {
+                    uploadedImages.push({ url: reflection.thirdImageUrl, caption: reflection.thirdImageCaption || '' });
+                }
+                renderImageGrid();
+            } else {
+                title.innerHTML = '<i class="fas fa-plus"></i> 添加新感悟';
+                document.getElementById('reflectionId').value = '';
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+        
+        function triggerImageUpload() {
+            if (uploadedImages.length >= 6) {
+                showToast('最多只能添加6张图片', 'error');
+                return;
+            }
+            document.getElementById('imageInput').click();
+        }
+        
+        async function handleImageUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+            
+            for (let file of files) {
+                if (uploadedImages.length >= 6) {
+                    showToast('最多只能添加6张图片', 'error');
+                    break;
+                }
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                try {
+                    const response = await fetch(UPLOAD_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        uploadedImages.push({ url: result.url, caption: '' });
+                        showToast('图片上传成功', 'success');
+                    } else {
+                        showToast('上传失败: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    showToast('上传失败: ' + error.message, 'error');
+                }
+            }
+            
+            renderImageGrid();
+            event.target.value = '';
+        }
+        
+        function renderImageGrid() {
+            const grid = document.getElementById('imagesGrid');
+            let html = '';
+            
+            uploadedImages.forEach((img, index) => {
+                html += `
+                    <div class="image-upload-item">
+                        <div class="image-preview">
+                            <img src="${img.url}" alt="配图${index + 1}">
+                            <button type="button" class="remove-btn" onclick="removeImage(${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="image-caption-input">
+                            <input type="text" placeholder="图片说明（可选）" 
+                                   value="${escapeHtml(img.caption)}" 
+                                   onchange="updateCaption(${index}, this.value)">
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (uploadedImages.length < 6) {
+                html += `
+                    <button type="button" class="upload-btn" onclick="triggerImageUpload()">
+                        <i class="fas fa-plus"></i>
+                        <span>添加图片</span>
+                    </button>
+                `;
+            }
+            
+            grid.innerHTML = html;
+        }
+        
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            renderImageGrid();
+        }
+        
+        function updateCaption(index, caption) {
+            uploadedImages[index].caption = caption;
+        }
+        
+        async function saveReflection() {
+            const id = document.getElementById('reflectionId').value;
+            const reflection = {
+                authorName: document.getElementById('authorName').value,
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                highlightQuote: document.getElementById('highlightQuote').value,
+                published: document.getElementById('published').checked,
+                imageUrl: uploadedImages[0] ? uploadedImages[0].url : null,
+                imageCaption: uploadedImages[0] ? uploadedImages[0].caption : null,
+                secondImageUrl: uploadedImages[1] ? uploadedImages[1].url : null,
+                secondImageCaption: uploadedImages[1] ? uploadedImages[1].caption : null,
+                thirdImageUrl: uploadedImages[2] ? uploadedImages[2].url : null,
+                thirdImageCaption: uploadedImages[2] ? uploadedImages[2].caption : null
+            };
+            
+            if (!reflection.authorName || !reflection.title || !reflection.content) {
+                showToast('请填写必填字段（作者、标题、正文）', 'error');
+                return;
+            }
+            
+            try {
+                let response;
+                if (id) {
+                    response = await fetch(`${API_URL}/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(reflection)
+                    });
+                } else {
+                    response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(reflection)
+                    });
+                }
+                
+                if (response.ok) {
+                    showToast(id ? '更新成功！' : '添加成功！', 'success');
+                    closeModal();
+                    loadReflections();
+                } else {
+                    throw new Error('保存失败');
+                }
+            } catch (error) {
+                showToast('保存失败: ' + error.message, 'error');
+            }
+        }
+        
+        async function editReflection(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                if (response.ok) {
+                    const reflection = await response.json();
+                    openModal(reflection);
+                }
+            } catch (error) {
+                showToast('加载失败: ' + error.message, 'error');
+            }
+        }
+        
+        async function deleteReflection(id) {
+            if (!confirm('确定要删除这条感悟吗？此操作不可恢复。')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    showToast('删除成功！', 'success');
+                    loadReflections();
+                } else {
+                    throw new Error('删除失败');
+                }
+            } catch (error) {
+                showToast('删除失败: ' + error.message, 'error');
+            }
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // 登录功能
+        const CORRECT_PASSWORD = 'admin123';
+        
+        // 检查是否已登录
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            showMainContent();
+        }
+        
+        // 登录表单提交
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === CORRECT_PASSWORD) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showMainContent();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+        
+        // 显示主内容
+        function showMainContent() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            loadReflections();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人感悟 - 植树节活动</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .detail-wrapper {
+            padding: 120px 0 60px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 50%, #d4e4d7 100%);
+        }
+        .detail-wrapper .container { max-width: 900px; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+        .back-link:hover {
+            color: var(--accent-color);
+            gap: 15px;
+        }
+        
+        .detail-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .detail-header {
+            background: linear-gradient(135deg, #1a5c1a 0%, #2d8a2d 50%, #3cb371 100%);
+            padding: 40px;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .detail-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: shimmer 3s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .detail-header h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .detail-header .meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            opacity: 0.95;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .detail-body { padding: 50px; }
+        
+        .detail-body p {
+            font-size: 1.1rem;
+            line-height: 2.2;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e9 100%);
+            border-left: 5px solid #3cb371;
+            padding: 25px 30px;
+            margin: 30px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 4px 15px rgba(45, 138, 45, 0.1);
+        }
+        
+        .highlight-box p {
+            margin: 0 !important;
+            font-style: italic;
+            color: #1a5c1a;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .image-caption {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .loading, .error {
+            text-align: center;
+            padding: 100px;
+            color: #666;
+        }
+        
+        .error { color: #dc3545; }
+        
+        @media (max-width: 768px) {
+            .detail-header { padding: 30px 20px; }
+            .detail-header h1 { font-size: 1.5rem; }
+            .detail-body { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 - 动态加载 -->
+    <div id="navbar-container"></div>
+
+    <!-- 感悟详情内容 -->
+    <section class="detail-wrapper">
+        <div class="container" id="content">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> 加载中...
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 - 动态加载 -->
+    <div id="footer-container"></div>
+
+    <!-- 引入脚本 -->
+    <script src="js/utils.js"></script>
+    <script>
+        const API_URL = '/api/reflections';
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 加载公共组件
+            await loadComponents();
+            
+            // 加载感悟详情
+            loadReflection();
+        });
+        
+        // 加载公共组件（导航栏和页脚）
+        async function loadComponents() {
+            await Promise.all([
+                loadComponent('navbar', '#navbar-container'),
+                loadComponent('footer', '#footer-container')
+            ]);
+        }
+        
+        function getReflectionId() {
+            return getQueryParam('id');
+        }
+        
+        async function loadReflection() {
+            const id = getReflectionId();
+            const container = document.getElementById('content');
+            
+            if (!id) {
+                container.innerHTML = '<div class="error"><i class="fas fa-exclamation-circle"></i> 缺少感悟ID参数</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error('感悟不存在');
+                }
+                
+                const r = await response.json();
+                
+                let imagesHtml = buildImagesHtml(r);
+                let contentHtml = buildContentHtml(r);
+                let highlightHtml = buildHighlightHtml(r);
+                
+                container.innerHTML = `
+                    <a href="index.html#reflections" class="back-link">
+                        <i class="fas fa-arrow-left"></i> 返回感悟列表
+                    </a>
+                    
+                    <div class="detail-card">
+                        <div class="detail-header">
+                            <h1>${escapeHtml(r.title)}</h1>
+                            <div class="meta">
+                                <span><i class="fas fa-user"></i> ${escapeHtml(r.authorName)}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatDate(r.publishDate)}</span>
+                            </div>
+                        </div>
+                        <div class="detail-body">
+                            ${imagesHtml}
+                            ${contentHtml}
+                            ${highlightHtml}
+                        </div>
+                    </div>
+                `;
+                
+                document.title = `${r.title} - 植树节活动`;
+                
+            } catch (error) {
+                container.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${escapeHtml(error.message)}</div>`;
+            }
+        }
+        
+        function buildImagesHtml(reflection) {
+            const images = [
+                { url: reflection.imageUrl, caption: reflection.imageCaption },
+                { url: reflection.secondImageUrl, caption: reflection.secondImageCaption },
+                { url: reflection.thirdImageUrl, caption: reflection.thirdImageCaption }
+            ];
+            
+            return images
+                .filter(img => img.url)
+                .map(img => `
+                    <div class="image-container">
+                        <img src="${escapeHtml(img.url)}" alt="配图">
+                        ${img.caption ? `<div class="image-caption">${escapeHtml(img.caption)}</div>` : ''}
+                    </div>
+                `).join('');
+        }
+        
+        function buildContentHtml(reflection) {
+            if (!reflection.content) return '';
+            
+            const paragraphs = reflection.content.split('\n\n');
+            return paragraphs
+                .filter(p => p.trim())
+                .map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`)
+                .join('');
+        }
+        
+        function buildHighlightHtml(reflection) {
+            if (!reflection.highlightQuote) return '';
+            return `<div class="highlight-box"><p>${escapeHtml(reflection.highlightQuote)}</p></div>`;
+        }
+    </script>
+</body>
+</html>
